@@ -6,6 +6,7 @@ public class EnemyMove : MonoBehaviour
     [SerializeField] private Transform player;
     private NavMeshAgent navMeshAgent;
     private Rigidbody rb;
+    [SerializeField] private float detectionRange = 8f;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -25,7 +26,15 @@ public class EnemyMove : MonoBehaviour
             return;
         }
 
-        navMeshAgent.SetDestination(player.position);
+        if(Vector3.Distance(transform.position, player.position) <= detectionRange)
+        {
+             navMeshAgent.SetDestination(player.position);
+        }
+        else
+        {
+            navMeshAgent.ResetPath();
+        }
+       
     }
 
     private void FixedUpdate()
@@ -39,5 +48,10 @@ public class EnemyMove : MonoBehaviour
 
         rb.linearVelocity = new Vector3(direction.x, rb.linearVelocity.y, direction.z);
         navMeshAgent.nextPosition = rb.position;
+    }
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
 }
