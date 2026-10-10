@@ -8,18 +8,24 @@ public class EnemyMove : MonoBehaviour
     private NavMeshAgent navMeshAgent;
     private Rigidbody rb;
 
+
+    [SerializeField] private float detectionRange = 8f;
+
+    private Vector3 lastKnownPlayerPosition;
     [SerializeField] private enemyState currentState;
 
     private enum enemyState
     {
         Idle,
+        Patrol,
         Chase,
         Search
     }
 
-    [SerializeField] private float detectionRange = 8f;
+    [SerializeField] Transform[] patrolPoints;
 
-    private Vector3 lastKnownPlayerPosition;
+    int currentPatrolIndex = 0;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -30,6 +36,16 @@ public class EnemyMove : MonoBehaviour
         navMeshAgent.updatePosition = false;
     }
 
+    void Start()
+    {
+        if (patrolPoints.Length > 0)
+        {
+            rb.position = patrolPoints[currentPatrolIndex].position;
+            navMeshAgent.Warp(patrolPoints[currentPatrolIndex].position);
+            navMeshAgent.SetDestination(patrolPoints[currentPatrolIndex].position);
+            currentState = enemyState.Patrol;
+        }
+    }
     // Update is called once per frame
     void Update()
     {
@@ -40,10 +56,14 @@ public class EnemyMove : MonoBehaviour
         }
         switch (currentState)
         {
-            case enemyState.Idle:
+            case enemyState.Patrol:
                 if (CanSeePlayer())
                 {
                     currentState = enemyState.Chase;
+                }
+                else if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+                {
+                    NextPatrolPoint();
                 }
                 break;
 
@@ -72,8 +92,8 @@ public class EnemyMove : MonoBehaviour
                 }
                 else if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
                 {
-                    navMeshAgent.ResetPath();
-                    currentState = enemyState.Idle;
+                    NextPatrolPoint();
+                    currentState = enemyState.Patrol;
                 }
                 break;
         }
@@ -108,5 +128,16 @@ public class EnemyMove : MonoBehaviour
             }
         }
         return false;
+    }
+
+    private void NextPatrolPoint()
+    {
+        if (patrolPoints.Length == 0)
+        {
+            return;
+        }
+
+        currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
+        navMeshAgent.SetDestination(patrolPoints[currentPatrolIndex].position);
     }
 }
