@@ -26,15 +26,15 @@ public class EnemyMove : MonoBehaviour
             return;
         }
 
-        if(Vector3.Distance(transform.position, player.position) <= detectionRange)
+        if (CanSeePlayer())
         {
-             navMeshAgent.SetDestination(player.position);
+            navMeshAgent.SetDestination(player.position);
         }
         else
         {
             navMeshAgent.ResetPath();
         }
-       
+
     }
 
     private void FixedUpdate()
@@ -53,5 +53,20 @@ public class EnemyMove : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
+    }
+    private bool CanSeePlayer()
+    {
+        Vector3 directionToPlayer = (player.position - transform.position).normalized;
+
+
+
+        if (Physics.Raycast(transform.position, directionToPlayer, out RaycastHit hit, detectionRange))
+        {
+            if (hit.collider != null && hit.collider.CompareTag("Player"))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
