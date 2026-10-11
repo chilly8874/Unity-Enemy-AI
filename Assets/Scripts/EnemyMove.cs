@@ -42,7 +42,7 @@ public class EnemyMove : MonoBehaviour
         {
             rb.position = patrolPoints[currentPatrolIndex].position;
             navMeshAgent.Warp(patrolPoints[currentPatrolIndex].position);
-            navMeshAgent.SetDestination(patrolPoints[currentPatrolIndex].position);
+            GoCurrentPatrolPoint();
             currentState = enemyState.Patrol;
         }
     }
@@ -63,7 +63,7 @@ public class EnemyMove : MonoBehaviour
                 }
                 else if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
                 {
-                    NextPatrolPoint();
+                    GoNextPatrolPoint();
                 }
                 break;
 
@@ -92,7 +92,7 @@ public class EnemyMove : MonoBehaviour
                 }
                 else if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
                 {
-                    NextPatrolPoint();
+                    GoCurrentPatrolPoint();
                     currentState = enemyState.Patrol;
                 }
                 break;
@@ -130,14 +130,24 @@ public class EnemyMove : MonoBehaviour
         return false;
     }
 
-    private void NextPatrolPoint()
+    private void GoCurrentPatrolPoint()
     {
         if (patrolPoints.Length == 0)
         {
             return;
         }
-
-        currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
         navMeshAgent.SetDestination(patrolPoints[currentPatrolIndex].position);
+    }
+
+    private void GoNextPatrolPoint()
+    {
+
+        if (patrolPoints.Length == 0)
+        {
+            return;
+        }
+        currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
+        GoCurrentPatrolPoint();
+
     }
 }
