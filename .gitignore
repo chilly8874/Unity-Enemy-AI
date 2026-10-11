@@ -112,3 +112,7 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Visual Scripting 자동 생성 캐시 (에디터가 다시 만듦)
+/[Aa]ssets/Unity.VisualScripting.Generated/
+/[Aa]ssets/Unity.VisualScripting.Generated.meta
