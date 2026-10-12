@@ -1,33 +1,28 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-
 public class EnemyMove : MonoBehaviour
 {
     [SerializeField] private Transform player;
     private NavMeshAgent navMeshAgent;
     private Rigidbody rb;
 
-
     [SerializeField] private float detectionRange = 8f;
 
     private Vector3 lastKnownPlayerPosition;
-    [SerializeField] private enemyState currentState;
+    [SerializeField] private EnemyState currentState;
 
-    private enum enemyState
+    private enum EnemyState
     {
-        Idle,
         Patrol,
         Chase,
         Search
     }
 
-    [SerializeField] Transform[] patrolPoints;
+    [SerializeField] private Transform[] patrolPoints;
 
-    int currentPatrolIndex = 0;
+    private int currentPatrolIndex = 0;
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
@@ -43,36 +38,30 @@ public class EnemyMove : MonoBehaviour
             rb.position = patrolPoints[currentPatrolIndex].position + Vector3.up * navMeshAgent.baseOffset;
             navMeshAgent.Warp(patrolPoints[currentPatrolIndex].position);
             GoCurrentPatrolPoint();
-            currentState = enemyState.Patrol;
+            currentState = EnemyState.Patrol;
         }
     }
-    // Update is called once per frame
+
     void Update()
     {
-
         if (player == null || !navMeshAgent.isOnNavMesh)
         {
             return;
         }
         switch (currentState)
         {
-            case enemyState.Patrol:
+            case EnemyState.Patrol:
                 if (CanSeePlayer())
                 {
-                    currentState = enemyState.Chase;
+                    currentState = EnemyState.Chase;
                 }
-                else if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+                else if (HasArrived())
                 {
                     GoNextPatrolPoint();
                 }
                 break;
 
-            case enemyState.Chase:
-                if (player == null || !navMeshAgent.isOnNavMesh)
-                {
-                    return;
-                }
-
+            case EnemyState.Chase:
                 if (CanSeePlayer())
                 {
                     navMeshAgent.SetDestination(player.position);
@@ -80,20 +69,20 @@ public class EnemyMove : MonoBehaviour
                 }
                 else
                 {
-                    currentState = enemyState.Search;
+                    currentState = EnemyState.Search;
                     navMeshAgent.SetDestination(lastKnownPlayerPosition);
                 }
                 break;
 
-            case enemyState.Search:
+            case EnemyState.Search:
                 if (CanSeePlayer())
                 {
-                    currentState = enemyState.Chase;
+                    currentState = EnemyState.Chase;
                 }
-                else if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance)
+                else if (HasArrived())
                 {
                     GoCurrentPatrolPoint();
-                    currentState = enemyState.Patrol;
+                    currentState = EnemyState.Patrol;
                 }
                 break;
         }
@@ -111,11 +100,13 @@ public class EnemyMove : MonoBehaviour
         rb.linearVelocity = new Vector3(direction.x, rb.linearVelocity.y, direction.z);
         navMeshAgent.nextPosition = rb.position;
     }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
+    
     private bool CanSeePlayer()
     {
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
@@ -141,13 +132,16 @@ public class EnemyMove : MonoBehaviour
 
     private void GoNextPatrolPoint()
     {
-
         if (patrolPoints.Length == 0)
         {
             return;
         }
         currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Length;
         GoCurrentPatrolPoint();
+    }
 
+    private bool HasArrived()
+    {
+        return !navMeshAgent.pathPending && navMeshAgent.remainingDistance <= navMeshAgent.stoppingDistance;
     }
 }
