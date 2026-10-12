@@ -40,7 +40,7 @@ public class EnemyMove : MonoBehaviour
     {
         if (patrolPoints.Length > 0)
         {
-            rb.position = patrolPoints[currentPatrolIndex].position;
+            rb.position = patrolPoints[currentPatrolIndex].position + Vector3.up * navMeshAgent.baseOffset;
             navMeshAgent.Warp(patrolPoints[currentPatrolIndex].position);
             GoCurrentPatrolPoint();
             currentState = enemyState.Patrol;
