@@ -11,6 +11,7 @@ public class EnemyMove : MonoBehaviour
 
     private Vector3 lastKnownPlayerPosition;
     [SerializeField] private EnemyState currentState;
+
     private enum EnemyState
     {
         Patrol,
