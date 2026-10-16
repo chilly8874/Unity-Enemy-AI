@@ -13,7 +13,7 @@ NavMesh 경로 탐색과 FSM(유한 상태 머신)으로 구현한 **순찰 · �
 | 언어 | C# |
 | 패키지 | AI Navigation 2.0.14, Input System 1.20.0 |
 | 개발 인원 | 1명 |
-| 개발 기간 | 2026.10 ~ 진행 중 |
+| 개발 기간 | 2026.10 (v1 완료) |
 
 기본 NavMesh 기능 학습, 상황에 따라 판단하는 적 AI를 직접 설계해 보는 것이 목표
 
@@ -23,6 +23,7 @@ NavMesh 경로 탐색과 FSM(유한 상태 머신)으로 구현한 **순찰 · �
 
 ```mermaid
 stateDiagram-v2
+direction LR
     [*] --> Patrol
     Patrol --> Chase : 플레이어 발견
     Chase --> Search : 시야에서 놓침
@@ -39,9 +40,7 @@ stateDiagram-v2
 ### 2. 감지 (거리 + 시야 가림)
 - 감지 거리 안에 있어도 **벽에 가려지면 감지하지 못함**
 - 적에서 플레이어 방향으로 `Physics.Raycast`를 쏴서, 처음 맞은 대상이 플레이어인지 판정
-- 감지 범위는 `OnDrawGizmosSelected`로 Scene 뷰에 시각화
-
-<!-- TODO: 벽 뒤에 숨으면 추적을 멈추는 GIF -->
+- 감지 범위는 `OnDrawGizmos`로 Scene 뷰에 원과 상태 글씨 표시로 시각화
 
 ### 3. 이동 (NavMesh 경로 탐색 + Rigidbody 물리 이동)
 - `NavMeshAgent`는 **경로 계산만**, 실제 이동은 **Rigidbody**가 담당
@@ -87,9 +86,6 @@ stateDiagram-v2
   - GoCurrentPatrolPoint(): 인덱스를 유지한 채 이동. Start와 수색 종료 때 사용
   - GoNextPatrolPoint(): +1 한 뒤 GoCurrent를 호출. Patrol에서 도착했을 때만 사용
 
-### 같은 이동 코드인데 플레이어만 구름 (조사 중)
-<!-- 조사 후 작성 -->
-
 ## 프로젝트 구조
 
 ```
@@ -100,11 +96,13 @@ Assets/Scripts/
 ```
 
 ## 현재 범위와 확장 아이디어
+
 - 현재 범위: 단일 적의 Patrol / Chase / Search
 - 감지 방식: Raycast 가림 판정 (시야각 조건은 없음)
 - 전투 범위: 추적·수색까지 (공격은 없음)
 - 확장 아이디어: FOV, 공격 상태
 - 구조 개선 검토: 상태가 늘어나면 State 패턴 분리
+- 알려진 제한 : 같은 linearVelocity 이동 방식인데 플레이어 큐브만 구르고 적 큐브는 안 구름
 
 ## AI 활용
 
