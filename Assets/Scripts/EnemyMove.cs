@@ -11,7 +11,6 @@ public class EnemyMove : MonoBehaviour
 
     private Vector3 lastKnownPlayerPosition;
     [SerializeField] private EnemyState currentState;
-
     private enum EnemyState
     {
         Patrol,
@@ -101,12 +100,18 @@ public class EnemyMove : MonoBehaviour
         navMeshAgent.nextPosition = rb.position;
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
+#if UNITY_EDITOR
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 20;
+        style.normal.textColor = Color.white;
+        UnityEditor.Handles.color = Color.red;
+        UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.up, detectionRange);
+        UnityEditor.Handles.Label(transform.position + Vector3.up * 2, currentState.ToString(), style);
+#endif     
     }
-    
+
     private bool CanSeePlayer()
     {
         Vector3 directionToPlayer = (player.position - transform.position).normalized;
