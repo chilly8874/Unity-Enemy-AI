@@ -99,13 +99,12 @@ Assets/Scripts/
 └── EnemyMove.cs    # 적 AI (FSM, 감지, NavMesh + Rigidbody 이동)
 ```
 
-## 앞으로 할 일
-
-- [X] 웨이포인트 건너뛰기 버그 수정
-- [ ] 시야각(FOV) 감지
-- [ ] 공격 상태
-- [ ] 여러 마리 적 (LayerMask로 감지 대상 필터링)
-- [ ] State 패턴으로 리팩터링
+## 현재 범위와 확장 아이디어
+- 현재 범위: 단일 적의 Patrol / Chase / Search
+- 감지 방식: Raycast 가림 판정 (시야각 조건은 없음)
+- 전투 범위: 추적·수색까지 (공격은 없음)
+- 확장 아이디어: FOV, 공격 상태
+- 구조 개선 검토: 상태가 늘어나면 State 패턴 분리
 
 ## AI 활용
 
