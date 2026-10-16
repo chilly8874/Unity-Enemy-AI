@@ -2,6 +2,10 @@
 
 NavMesh 경로 탐색과 FSM(유한 상태 머신)으로 구현한 **순찰 · 추적 · 수색** 적 AI
 
+<img width="800" height="427" alt="UnityEnemyAI" src="https://github.com/user-attachments/assets/eca2bb82-36f1-4811-873c-2863c677f780" />
+
+
+
 ## 개요
 | 항목 | 내용 |
 |---|---|
@@ -31,8 +35,6 @@ stateDiagram-v2
 | **Patrol** | 웨이포인트를 순서대로 순환 | 플레이어 발견 → Chase |
 | **Chase** | 플레이어 추적, 마지막으로 본 위치 기록 | 시야에서 놓침 → Search |
 | **Search** | 마지막으로 본 위치까지 이동 | 다시 발견 → Chase / 도착 → Patrol |
-
-<!-- TODO: 상태 전환 GIF -->
 
 ### 2. 감지 (거리 + 시야 가림)
 - 감지 거리 안에 있어도 **벽에 가려지면 감지하지 못함**
