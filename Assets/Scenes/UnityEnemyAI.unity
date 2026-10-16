@@ -540,13 +540,13 @@ PrefabInstance:
       propertyPath: 'patrolPoints.Array.data[2]'
       value: 
       objectReference: {fileID: 747382966}
+    - target: {fileID: 5366669322142630379, guid: 1b34c25e008f0c448b80e203cda5b0a4, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 05c47b458a77b834bb75a489948bfde9, type: 2}
     - target: {fileID: 6501464794004660539, guid: 1b34c25e008f0c448b80e203cda5b0a4, type: 3}
       propertyPath: m_Speed
       value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 6501464794004660539, guid: 1b34c25e008f0c448b80e203cda5b0a4, type: 3}
-      propertyPath: m_Acceleration
-      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 7950393135262133931, guid: 1b34c25e008f0c448b80e203cda5b0a4, type: 3}
       propertyPath: m_Name
@@ -1145,7 +1145,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 2d4211439f2c95c46bfb799aa8a3d8a1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
